@@ -11,7 +11,7 @@ screen_width = screen_size[0]
 screen_height = screen_size[1]
 print(screen_size)
 
-font = pygame.font.SysFont("sans", 200, bold=True)
+font = pygame.font.SysFont("sans", int(screen_width / 5), bold=True)
 # Font setup
 running = True
 while running:
