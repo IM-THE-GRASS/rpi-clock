@@ -8,8 +8,9 @@ pygame.init()
 
 f = open("settings.json", "r")
 settings = f.read()
-f.close
-
+settings = json.loads(settings)
+print(type(settings["font"][1]))
+font = settings["font"][0]
 
 
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -17,7 +18,7 @@ pygame.display.set_caption("clock")
 screen_size = pygame.display.get_window_size()
 screen_width = screen_size[0]
 screen_height = screen_size[1]
-font = "nunito"
+
 
 
 print(screen_size)
@@ -90,7 +91,16 @@ class menu:
         
         return text_rect
     def on_click(self, button):
-        print(button)
+        if button == "font":
+            fonts = settings["font"][1].index(font)
+            try:
+                fonts = settings["font"][1][fonts + 1]
+            except:
+                fonts = settings["font"][1][0]
+            settings["font"][0] = fonts
+            print(fonts)
+        elif button == "save":
+            self.close()
             
             
             
@@ -105,7 +115,7 @@ class menu:
         
 settings_menu = menu("settings", (0,0,0))
 
-settings = button(
+settings_button = button(
     screen_width / 1.15,
     screen_height / 15,
     screen_width/10,
@@ -115,7 +125,7 @@ settings = button(
 
 running = True
 while running:
-    
+    font = settings["font"][0]
 
     #time stuff
     now = datetime.datetime.now()
@@ -131,7 +141,7 @@ while running:
     screen.blit(text_surface, text_rect)
     
     
-    settings.draw()
+    settings_button.draw()
     settings_menu.draw()
     pygame.display.flip()
     keys = pygame.key.get_pressed()
@@ -144,7 +154,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if settings.get_rect().collidepoint(event.pos):
+            if settings_button.get_rect().collidepoint(event.pos):
                 if settings_menu.enabled == False:
                     settings_menu.open()
             for key in settings_menu.buttons.keys():
