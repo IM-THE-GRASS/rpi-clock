@@ -9,6 +9,7 @@ pygame.display.set_caption("clock")
 screen_size = pygame.display.get_window_size()
 screen_width = screen_size[0]
 screen_height = screen_size[1]
+font = pygame.font.SysFont("sans", int(screen_width / 5), bold=True)
 print(screen_size)
 class button:
     def __init__(self,x,y,width,height,image_path,bg_color = None):
@@ -55,14 +56,16 @@ class menu:
         self.enabled = False
     def draw(self):
         if self.enabled == True:
+            
             pygame.draw.rect(screen,(255,255,255), self.outline)
             pygame.draw.rect(screen,self.color,self.bg)
+            
             
     
         
         
 settings_menu = menu("settings", (0,0,0))
-font = pygame.font.SysFont("sans", int(screen_width / 5), bold=True)
+
 settings = button(
     screen_width / 1.15,
     screen_height / 15,
@@ -88,11 +91,15 @@ while running:
     screen.fill((0, 0, 0))
     screen.blit(text_surface, text_rect)
     
-    settings_menu.draw()
-    settings.draw()
-    pygame.display.flip()
-
     
+    settings.draw()
+    settings_menu.draw()
+    pygame.display.flip()
+    keys = pygame.key.get_pressed()
+    
+    
+    if keys[pygame.K_ESCAPE]:
+        settings_menu.close()
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
