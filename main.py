@@ -17,7 +17,7 @@ pygame.display.set_caption("clock")
 screen_size = pygame.display.get_window_size()
 screen_width = screen_size[0]
 screen_height = screen_size[1]
-font = "sans"
+font = "nunito"
 
 
 print(screen_size)
@@ -47,7 +47,7 @@ class menu:
         menu_y = screen_height/20
         menu_width = screen_width - screen_width/10
         menu_height = screen_height - screen_height/10
-        
+        self.buttons = {}
         self.bg = pygame.Rect(
             menu_x,
             menu_y,
@@ -60,29 +60,38 @@ class menu:
             menu_width + screen_width/30,
             menu_height + screen_width/30
         )
-    def draw_text(self, text, number, text_size):
-        menu_font = pygame.font.SysFont(font, text_size, True)
-        text_surface = menu_font.render(text, True, (0, 0, 0))
-        text_rect = text_surface.get_rect()
-        text_rect.topleft = (self.bg.x + self.bg.width / 100, self.bg.y + self.bg.width/100 + number * text_rect.height * 1.2)
-        pygame.draw.rect(screen,(255,255,255), text_rect)
-        screen.blit(text_surface, text_rect) 
-        
-        return text_rect
     def open(self):
         self.enabled = True
     def close(self):
         self.enabled = False
     def draw(self):
-        if self.enabled == True:
-            text_size = int(screen_width / 20)
-            pygame.draw.rect(screen,(255,255,255), self.outline)
-            pygame.draw.rect(screen,self.color,self.bg)
-            self.draw_text(self.name, 0, text_size)
+        if self.enabled == False:
+            return
+        pygame.draw.rect(screen,(255,255,255), self.outline) # menu outline
+        pygame.draw.rect(screen,self.color,self.bg) # menu
+        
+        self.draw_setting(0, self.name) # settings text
+        
+        self.draw_setting(1, "font", font)
+        self.draw_setting(6, "save")
+    def draw_setting(self, number, text, value = None):
+        if value != None:
+            menu_text = text + " = " + value
+        else:
+            menu_text = text
+        text_size = int(screen_height / 10.5)
+        menu_font = pygame.font.SysFont("sans", text_size, True)
+        text_surface = menu_font.render(menu_text, True, (0, 0, 0))
+        text_rect = text_surface.get_rect()
+        text_rect.topleft = (self.bg.x + self.bg.width / 100, self.bg.y + self.bg.width/100 + number * text_rect.height * 1.2)
+        pygame.draw.rect(screen,(255,255,255), text_rect)
+        screen.blit(text_surface, text_rect) 
+        self.buttons[text] = text_rect
+        
+        return text_rect
+    def on_click(self, button):
+        print(button)
             
-            self.draw_text("font = " + font, 1, text_size)
-            
-            self.draw_text("save", 6, text_size)
             
             
             
@@ -91,8 +100,7 @@ class menu:
             
             
             
-            
-    
+
         
         
 settings_menu = menu("settings", (0,0,0))
@@ -113,7 +121,7 @@ while running:
     now = datetime.datetime.now()
     time = now.strftime("%I:%M %p")
 
-    time_font = pygame.font.SysFont("sans", int(screen_width / 5), bold=True)
+    time_font = pygame.font.SysFont(font, int(screen_width / 5), bold=True)
     text_surface = time_font.render(time, True, (255, 255, 255))
     text_rect = text_surface.get_rect(center=(screen_width / 2, screen_height / 2))
     
@@ -137,10 +145,12 @@ while running:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if settings.get_rect().collidepoint(event.pos):
-                
                 if settings_menu.enabled == False:
                     settings_menu.open()
-
-    pygame.time.delay(1)
+            for key in settings_menu.buttons.keys():
+                rect = settings_menu.buttons[key]
+                if rect.collidepoint(event.pos):
+                    settings_menu.on_click(key)
+            
 
 pygame.quit()
