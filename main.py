@@ -3,9 +3,8 @@ import datetime
 import os
 import json
 import requests
-
 pygame.init()
-
+   
 f = open("settings.json", "r")
 settings = f.read()
 f.close()
@@ -23,7 +22,7 @@ screen_height = screen_size[1]
 
 
 
-print(screen_size)
+
 class button:
     def __init__(self,x,y,width,height,image_path,bg_color = None):
         self.x = x
@@ -94,25 +93,45 @@ class menu:
         
         return text_rect
     def on_click(self, button):
+        if not self.enabled:
+            return
         def update_value(key):
             current_value = settings[key][1].index(settings[key][0])
+            print(current_value)
             try:
                 new_value = settings[key][1][current_value + 1]
             except:
                 new_value = settings[key][1][0]
+            print(new_value)
             settings[key][0] = new_value
+            print(settings[key][0])
         if button == "font":
             update_value(button)
         elif button == "quotes":
             update_value(button)
+            print("g")
         elif button == "save":
             
             f = open("settings.json", "w")
             f.write(json.dumps(settings, indent=4))
             f.close()
             self.close()
-            
-            
+quote_count = 19999999
+def get_quote():
+    global quote_count
+    if quote_count < 9999999:
+        print(quote_count)
+        quote_count +=1
+        return open("quote.txt", "r").read()
+    quote_count = 0
+    data = requests.get("https://zenquotes.io/api/random").json()[0]
+    quoted = data["q"]
+    author = data["a"]
+    if quoted != "Too many requests. Obtain an auth key for unlimited access.":
+        open("quote.txt", "w").write(quoted)
+        return quoted + "\n -" + author
+    else:
+        return open("quote.txt", "r").read()
             
             
             
@@ -139,20 +158,25 @@ while running:
     font = settings["font"][0]
     #time stuff
     now = datetime.datetime.now()
-    time = now.strftime("%I:%M %p")
+    times = now.strftime("%I:%M %p")
 
     time_font = pygame.font.SysFont(font, int(screen_width / 5), bold=True)
-    text_surface = time_font.render(time, True, (255, 255, 255))
+    text_surface = time_font.render(times, True, (255, 255, 255))
     text_rect = text_surface.get_rect(center=(screen_width / 2, screen_height / 2))
-    if quotes:
-        print(requests.get("https://zenquotes.io/api/random"))
+    
         
 
     
     screen.fill((0, 0, 0))
     screen.blit(text_surface, text_rect)
     
-    
+    if quotes:
+        quote_font = pygame.font.SysFont(font, int(screen_width / 50), bold=True)
+        quote = get_quote()
+        text_surface = quote_font.render(quote, True, (255, 255, 255))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (screen_width/2,screen_height * 0.9)
+        screen.blit(text_surface, text_rect)
     settings_button.draw()
     settings_menu.draw()
     pygame.display.flip()
@@ -173,8 +197,6 @@ while running:
                 rect = settings_menu.buttons[key]
                 if rect.collidepoint(event.pos):
                     settings_menu.on_click(key)
-                    
-    pygame.time.delay(100)
             
 
 pygame.quit()
