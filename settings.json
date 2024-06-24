@@ -1,11 +1,13 @@
 {
-    "font":[
-        "sans",
+    "font": [
+        "comic sans",
         [
             "sans",
             "nunito",
             "arial",
-            "comic sans"
+            "comic sans",
+            "helvetica",
+            "times new roman"
         ]
     ]
 }

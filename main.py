@@ -8,6 +8,7 @@ pygame.init()
 
 f = open("settings.json", "r")
 settings = f.read()
+f.close()
 settings = json.loads(settings)
 print(type(settings["font"][1]))
 font = settings["font"][0]
@@ -100,6 +101,10 @@ class menu:
             settings["font"][0] = fonts
             print(fonts)
         elif button == "save":
+            
+            f = open("settings.json", "w")
+            f.write(json.dumps(settings, indent=4))
+            f.close()
             self.close()
             
             
@@ -126,7 +131,6 @@ settings_button = button(
 running = True
 while running:
     font = settings["font"][0]
-
     #time stuff
     now = datetime.datetime.now()
     time = now.strftime("%I:%M %p")
