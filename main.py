@@ -177,12 +177,14 @@ while running:
     
     
     if quotes:
-        quote_font = pygame.font.SysFont(font, int(screen_width / 25), bold=True)
+        quote_font = pygame.font.SysFont(font, int(screen_width / 40), bold=True)
         quote, author = get_quote()
-        print(len("Power is not what we do but what we do not - hasty and unwise actions that we repeat every day and which ultimately bring us into trouble."))
-        quote_rect1 = write_text(quote[:45],quote_font,(screen_width / 2, screen_height / 1.5))
-        quote_rect2 = write_text(quote[45:90],quote_font,(screen_width / 2, screen_height / 1))
-        quote_rect3 = write_text(quote[90:135],quote_font,(screen_width / 2, screen_height / 0.75))
+        quote1 = quote[:80]
+        quote2 = quote[80:160]
+        quote3 = quote[160:240]
+        quote_rect1 = write_text(quote1,quote_font,(screen_width / 2, screen_height / 1.4))
+        quote_rect2 = write_text(quote2,quote_font,(screen_width / 2, screen_height / 1.3))
+        quote_rect3 = write_text(quote3,quote_font,(screen_width / 2, screen_height / 1.2))
         author_rect = write_text(author,quote_font,(quote_rect3.centerx, quote_rect3.centery + 50))
         
     settings_button.draw()
