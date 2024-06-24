@@ -2,7 +2,7 @@ import pygame
 import datetime
 import os
 import json
-
+import requests
 
 pygame.init()
 
@@ -11,8 +11,9 @@ settings = f.read()
 f.close()
 settings = json.loads(settings)
 print(type(settings["font"][1]))
-font = settings["font"][0]
 
+font = settings["font"][0]
+quotes = settings["quotes"][0]
 
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption("clock")
@@ -75,10 +76,11 @@ class menu:
         self.draw_setting(0, self.name) # settings text
         
         self.draw_setting(1, "font", font)
+        self.draw_setting(2, "quotes", quotes)
         self.draw_setting(6, "save")
     def draw_setting(self, number, text, value = None):
         if value != None:
-            menu_text = text + " = " + value
+            menu_text = text + " = " + str(value).lower()
         else:
             menu_text = text
         text_size = int(screen_height / 10.5)
@@ -92,14 +94,17 @@ class menu:
         
         return text_rect
     def on_click(self, button):
-        if button == "font":
-            fonts = settings["font"][1].index(font)
+        def update_value(key):
+            current_value = settings[key][1].index(settings[key][0])
             try:
-                fonts = settings["font"][1][fonts + 1]
+                new_value = settings[key][1][current_value + 1]
             except:
-                fonts = settings["font"][1][0]
-            settings["font"][0] = fonts
-            print(fonts)
+                new_value = settings[key][1][0]
+            settings[key][0] = new_value
+        if button == "font":
+            update_value(button)
+        elif button == "quotes":
+            update_value(button)
         elif button == "save":
             
             f = open("settings.json", "w")
@@ -130,6 +135,7 @@ settings_button = button(
 
 running = True
 while running:
+    quotes = settings["quotes"][0]
     font = settings["font"][0]
     #time stuff
     now = datetime.datetime.now()
@@ -138,7 +144,9 @@ while running:
     time_font = pygame.font.SysFont(font, int(screen_width / 5), bold=True)
     text_surface = time_font.render(time, True, (255, 255, 255))
     text_rect = text_surface.get_rect(center=(screen_width / 2, screen_height / 2))
-    
+    if quotes:
+        print(requests.get("https://zenquotes.io/api/random"))
+        
 
     
     screen.fill((0, 0, 0))
@@ -165,6 +173,8 @@ while running:
                 rect = settings_menu.buttons[key]
                 if rect.collidepoint(event.pos):
                     settings_menu.on_click(key)
+                    
+    pygame.time.delay(100)
             
 
 pygame.quit()

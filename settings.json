@@ -1,6 +1,6 @@
 {
     "font": [
-        "comic sans",
+        "times new roman",
         [
             "sans",
             "nunito",
@@ -8,6 +8,13 @@
             "comic sans",
             "helvetica",
             "times new roman"
+        ]
+    ],
+    "quotes": [
+        true,
+        [
+            true,
+            false
         ]
     ]
 }
