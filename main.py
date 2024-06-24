@@ -32,17 +32,21 @@ class menu:
         self.enabled = False
         self.name = name
         self.color = color
+        menu_x = screen_width/20
+        menu_y = screen_height/20
+        menu_width = screen_width - screen_width/10
+        menu_height = screen_height - screen_height/10
         self.bg = pygame.Rect(
-            screen_width/6,
-            screen_height/6,
-            screen_width - screen_width/3,
-            screen_height - screen_height/3
+            menu_x,
+            menu_y,
+            menu_width,
+            menu_height
         )
         self.outline = pygame.Rect(
-            screen_width/6 - screen_width/25,
-            screen_height/6- screen_width/25,
-            screen_width - screen_width/3+ screen_width/25,
-            screen_height - screen_height/3+ screen_width/25
+            menu_x - screen_width/60,
+            menu_y - screen_width/60,
+            menu_width + screen_width/30,
+            menu_height + screen_width/30
         )
         
     def open(self):
@@ -51,7 +55,7 @@ class menu:
         self.enabled = False
     def draw(self):
         if self.enabled == True:
-            pygame.draw.rect(screen,(165,83,34), self.outline)
+            pygame.draw.rect(screen,(255,255,255), self.outline)
             pygame.draw.rect(screen,self.color,self.bg)
             
     
@@ -83,8 +87,9 @@ while running:
     
     screen.fill((0, 0, 0))
     screen.blit(text_surface, text_rect)
-    settings.draw()
+    
     settings_menu.draw()
+    settings.draw()
     pygame.display.flip()
 
     
