@@ -119,22 +119,27 @@ class menu:
 quote_count = 19999999
 def get_quote():
     global quote_count
+    txt = open("quote.txt", "r").read().split("\n")
     if quote_count < 9999999:
         print(quote_count)
         quote_count +=1
-        return open("quote.txt", "r").read()
+        return txt[0], txt[1]
     quote_count = 0
     data = requests.get("https://zenquotes.io/api/random").json()[0]
     quoted = data["q"]
     author = data["a"]
     if quoted != "Too many requests. Obtain an auth key for unlimited access.":
-        open("quote.txt", "w").write(quoted)
-        return quoted + "\n -" + author
+        open("quote.txt", "w").write(quoted + "\n--" + author)
+        return quoted,author
     else:
-        return open("quote.txt", "r").read()
-            
-            
-            
+        return txt[0], txt[1]
+
+def write_text(text, text_font, location, color = (255,255,255)):
+    text_surface = text_font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.center = location
+    screen.blit(text_surface, text_rect)
+    return text_rect
             
             
             
@@ -159,24 +164,27 @@ while running:
     #time stuff
     now = datetime.datetime.now()
     times = now.strftime("%I:%M %p")
-
     time_font = pygame.font.SysFont(font, int(screen_width / 5), bold=True)
-    text_surface = time_font.render(times, True, (255, 255, 255))
-    text_rect = text_surface.get_rect(center=(screen_width / 2, screen_height / 2))
+    
+    
     
         
 
     
     screen.fill((0, 0, 0))
-    screen.blit(text_surface, text_rect)
+    write_text(times,time_font,(screen_width / 2, screen_height / 2))
+    
+    
     
     if quotes:
-        quote_font = pygame.font.SysFont(font, int(screen_width / 50), bold=True)
-        quote = get_quote()
-        text_surface = quote_font.render(quote, True, (255, 255, 255))
-        text_rect = text_surface.get_rect()
-        text_rect.center = (screen_width/2,screen_height * 0.9)
-        screen.blit(text_surface, text_rect)
+        quote_font = pygame.font.SysFont(font, int(screen_width / 25), bold=True)
+        quote, author = get_quote()
+        print(len("Power is not what we do but what we do not - hasty and unwise actions that we repeat every day and which ultimately bring us into trouble."))
+        quote_rect1 = write_text(quote[:45],quote_font,(screen_width / 2, screen_height / 1.5))
+        quote_rect2 = write_text(quote[45:90],quote_font,(screen_width / 2, screen_height / 1))
+        quote_rect3 = write_text(quote[90:135],quote_font,(screen_width / 2, screen_height / 0.75))
+        author_rect = write_text(author,quote_font,(quote_rect3.centerx, quote_rect3.centery + 50))
+        
     settings_button.draw()
     settings_menu.draw()
     pygame.display.flip()
