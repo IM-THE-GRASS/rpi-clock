@@ -121,7 +121,6 @@ def get_quote():
     global quote_count
     txt = open("quote.txt", "r").read().split("\n")
     if quote_count < 9999999:
-        print(quote_count)
         quote_count +=1
         return txt[0], txt[1]
     quote_count = 0
@@ -183,9 +182,15 @@ while running:
         quote2 = quote[80:160]
         quote3 = quote[160:240]
         quote_rect1 = write_text(quote1,quote_font,(screen_width / 2, screen_height / 1.4))
-        quote_rect2 = write_text("2" + quote2,quote_font,(screen_width / 2, quote_rect1.y + screen_height / 13.5))
-        quote_rect3 = write_text("3" + quote3,quote_font,(screen_width / 2, quote_rect2.y + screen_height / 13.5))
-        author_rect = write_text(author,quote_font,(quote_rect3.centerx, quote_rect3.centery + screen_height / 13.5))
+        quote_rect2 = write_text(quote2,quote_font,(screen_width / 2, quote_rect1.y + screen_height / 13.5))
+        quote_rect3 = write_text(quote3,quote_font,(screen_width / 2, quote_rect2.y + screen_height / 13.5))
+        
+        if quote2 == "":
+            author_rect = write_text(author,quote_font,(quote_rect1.centerx, quote_rect1.centery + screen_height / 13.5))
+        else:
+            author_rect = write_text(author,quote_font,(quote_rect3.centerx, quote_rect3.centery + screen_height / 13.5))
+            print(quote2)
+        
         
     settings_button.draw()
     settings_menu.draw()
